@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CycloneDDS xmlns="https://cdds.io/config"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
+  <Domain id="any">
+    <General>
+      <Interfaces>
+        <!-- use only loopback; don't use multicast on it -->
+        <NetworkInterface name="lo" multicast="false" priority="2"/>
+      </Interfaces>
+
+      <!-- don't listen for multicasts anywhere -->
+      <MulticastRecvNetworkInterfaceAddresses>none</MulticastRecvNetworkInterfaceAddresses>
+    </General>
+
+    <Tracing>
+      <Category>shm</Category>
+      <OutputFile>stdout</OutputFile>
+    </Tracing>
+  </Domain>
+</CycloneDDS>
+

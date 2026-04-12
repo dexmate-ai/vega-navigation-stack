@@ -1,0 +1,6 @@
+[submodule "robo_interface/dexcontrol-rosbridge"]
+	path = robo_interface/dexcontrol-rosbridge
+	url = https://github.com/dexmate-ai/dexcontrol-rosbridge.git
+[submodule "src/slam/super_odom"]
+	path = src/slam/super_odom
+	url = https://github.com/dexmate-ai/super-odom.git

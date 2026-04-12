@@ -1,0 +1,33 @@
+# Example: 30 degree rotation about Y-axis with translation
+# This represents a sensor mounted rotated 30 degrees
+# when viewed from the side
+
+/**:
+  ros__parameters:
+    map_frame: "map"
+    init_frame: "lidar_init"
+    vehicle_frame: "vehicle"
+    laser_imu_frame: "imu_link"
+    laser_frame: "laser"
+
+    # lidar_imu in vehicle frame (T_v_i)
+    t_v_i:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+
+    R_v_i:
+      data: [0.866025, 0.0, 0.5,
+            0.0, 1.0, 0.0,
+            -0.5, 0.0, 0.866025]
+    
+    # lidar in lidar_imu frame (T_i_l, aka lidar extrinsic to lidar_imu)
+    t_i_l:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+
+    R_i_l:
+      data: [1.0, 0.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 0.0, 1.0]

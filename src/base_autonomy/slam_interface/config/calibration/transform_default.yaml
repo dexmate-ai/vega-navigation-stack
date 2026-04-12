@@ -1,0 +1,42 @@
+# Transformation calibration file for slam_interface
+# This file defines the static transforms:
+#   1) map -> init_frame (SLAM world frame alignment)
+#   2) laser_imu_frame -> vehicle (IMU/body calibration, inverse of T_v_i)
+#   3) laser_imu_frame -> laser_frame (lidar extrinsic calibration)
+
+/**:
+  ros__parameters:
+    # Frame names
+    map_frame: "map"
+    init_frame: "lidar_init"
+    vehicle_frame: "vehicle"
+    laser_imu_frame: "laser"
+    laser_frame: "laser"
+
+    # T_v_i: Transform from IMU to vehicle frame
+    # Translation vector (meters) from IMU frame origin to vehicle frame origin
+    t_v_i:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+
+    # Rotation matrix from IMU frame to vehicle frame
+    # 3x3 rotation matrix in row-major order [R11, R12, R13; R21, R22, R23; R31, R32, R33]
+    R_v_i:
+      data: [1.0, 0.0, 0.0,
+             0.0, 1.0, 0.0,
+             0.0, 0.0, 1.0]
+    
+    # T_i_l: Transform from laser to IMU frame (lidar extrinsic calibration)
+    # Translation vector (meters) from laser frame origin to IMU frame origin
+    t_i_l:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+
+    # Rotation matrix from laser frame to IMU frame
+    R_i_l:
+      data: [1.0, 0.0, 0.0,
+             0.0, 1.0, 0.0,
+             0.0, 0.0, 1.0]
+

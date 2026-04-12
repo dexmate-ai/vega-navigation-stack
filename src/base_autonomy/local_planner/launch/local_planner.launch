@@ -1,0 +1,189 @@
+<launch>
+
+  <!-- Selects the parameter YAML under local_planner/config (e.g., standard_3d, omniDir). -->
+  <arg name="local_planner_config" default="standard_3d"/>
+  <!-- Legacy hardware flag propagated to pathFollower; kept for compatibility, currently unused by the node. -->
+  <arg name="realRobot" default="false"/>
+  <!-- Longitudinal offset (m) from the robot base frame origin to the LiDAR frame. -->
+  <arg name="sensorOffsetX" default="0.0"/>
+  <!-- Lateral offset (m) from the robot base to the LiDAR frame; positive values move the sensor left. -->
+  <arg name="sensorOffsetY" default="0.0"/>
+  <!-- Vertical camera offset (m) used only if the optional static transform publishers are enabled. -->
+  <arg name="cameraOffsetZ" default="0.0"/>
+  <!-- Allows the platform to reverse along planned paths when true. -->
+  <arg name="twoWayDrive" default="false"/>
+  <!-- Maximum translational speed (m/s) shared by the planner and follower. -->
+  <arg name="maxSpeed" default="0.5"/>
+  <!-- Starts the nodes in autonomy mode without requiring a manual enable. -->
+  <arg name="autonomyMode" default="false"/>
+  <!-- Target forward speed (m/s) applied when autonomy mode is active. -->
+  <arg name="autonomySpeed" default="0.5"/>
+  <!-- Time in seconds since the last joystick command before /speed updates are honored. -->
+  <arg name="joyToSpeedDelay" default="2.0"/>
+  <!-- Initial goal position in the map frame (m); useful for scripted runs without a goal publisher. -->
+  <arg name="goalX" default="0.0"/>
+  <!-- Initial goal position in the map frame (m); positive Y is left of the robot. -->
+  <arg name="goalY" default="0.0"/>
+  <!-- Registered LiDAR point cloud topic fed into the local planner. -->
+  <arg name="registered_scan_topic" default="/registered_scan_filtered_map"/>
+
+  <node pkg="local_planner" exec="localPlanner" name="localPlanner" output="screen">
+    <!-- Topic providing the registered LiDAR scan used for obstacle extraction. -->
+    <param name="registered_scan_topic" value="$(var registered_scan_topic)" />
+    <!-- Directory containing the precomputed path library consumed by the planner. -->
+    <param name="pathFolder" value="$(find-pkg-share local_planner)/paths" />
+    <!-- Total vehicle length (m) used to inflate obstacles when checking rotation clearance. -->
+    <param name="vehicleLength" value="1.8" />
+    <!-- Total vehicle width (m) used in the same clearance calculations. -->
+    <param name="vehicleWidth" value="1.8" />
+    <!-- Enables path selection that drives backwards when the goal sits behind the vehicle. -->
+    <param name="twoWayDrive" value="$(var twoWayDrive)" />
+    <!-- Leaf size (m) used by the voxel filter when downsampling raw LiDAR. -->
+    <param name="laserVoxelSize" value="0.05" />
+    <!-- Leaf size (m) used when downsampling the terrain map and rasterising boundaries. -->
+    <param name="terrainVoxelSize" value="0.2" />
+    <!-- Initial state for obstacle checking; autonomy can toggle it via /check_obstacle. -->
+    <param name="checkObstacle" value="true" />
+    <!-- Reject path orientations that rotate through nearby obstacles when true. -->
+    <param name="checkRotObstacle" value="false" />
+    <!-- Planning horizon radius (m) around the vehicle to consider obstacles. -->
+    <param name="adjacentRange" value="3.5" />
+    <!-- Minimum terrain height/intensity (m) treated as a hard obstacle; negative values accept almost everything. -->
+    <param name="obstacleHeightThre" value="0.1" />
+    <!-- Minimum terrain height/intensity (m) treated as a soft cost when useCost is enabled. -->
+    <param name="groundHeightThre" value="0.0" />
+    <!-- Average soft-cost height that triggers /slow_down=1 (strong slow request). -->
+    <param name="costHeightThre1" value="0.1" />
+    <!-- Average soft-cost height that triggers /slow_down=2 (milder slow request). -->
+    <param name="costHeightThre2" value="0.05" />
+    <!-- Enables accumulation of near-ground returns into cost penalties instead of hard blocking. -->
+    <param name="useCost" value="false" />
+    <!-- Maximum number of obstructed voxels tolerated for a path before it is discarded (lower is stricter). -->
+    <param name="pointPerPathThre" value="2" />
+    <!-- Maximum translational speed (m/s) used to normalize incoming /speed requests. -->
+    <param name="maxSpeed" value="$(var maxSpeed)" />
+    <!-- Weighting coefficient applied to heading error when scoring candidate paths (higher favors alignment). -->
+    <param name="dirWeight" value="0.02" />
+    <!-- Maximum allowable heading deviation (deg) between the desired direction and a candidate path. -->
+    <param name="dirThre" value="90.0" />
+    <!-- Interpret dirThre relative to the vehicle body instead of the desired direction when true. -->
+    <param name="dirToVehicle" value="false" />
+    <!-- Base scale applied to the precomputed path library; overridden by config files when present. -->
+    <param name="pathScale" value="0.875" />
+    <!-- Minimum allowable path scaling factor when shrinking to squeeze through gaps. -->
+    <param name="minPathScale" value="0.675" />
+    <!-- Decrement applied to pathScale when searching for a feasible solution. -->
+    <param name="pathScaleStep" value="0.1" />
+    <!-- Scales the path template proportionally to the requested speed when true. -->
+    <param name="pathScaleBySpeed" value="true" />
+    <!-- Minimum radial planning range (m) considered when the search horizon collapses. -->
+    <param name="minPathRange" value="0.8" />
+    <!-- Step size (m) for shrinking the planning range if no clear path is found. -->
+    <param name="pathRangeStep" value="0.6" />
+    <!-- Scales the planning range with the requested speed when true. -->
+    <param name="pathRangeBySpeed" value="true" />
+    <!-- Stops extending candidate paths once they exceed the goal distance when true. -->
+    <param name="pathCropByGoal" value="true" />
+    <!-- Start the planner in autonomy mode; otherwise it waits for manual enable. -->
+    <param name="autonomyMode" value="$(var autonomyMode)" />
+    <!-- Desired cruise speed (m/s) used when autonomy is active and no joystick input is present. -->
+    <param name="autonomySpeed" value="$(var autonomySpeed)" />
+    <!-- Delay (s) after manual input before the /speed topic can update the cruise speed. -->
+    <param name="joyToSpeedDelay" value="$(var joyToSpeedDelay)" />
+    <!-- Delay (s) before remote obstacle-check toggles take effect after manual input. -->
+    <param name="joyToCheckObstacleDelay" value="5.0" />
+    <!-- Radius (m) around the goal considered "arrived" for nav status and path cropping. -->
+    <!-- Need to consider finalYawActivation and the hystersis factor. -->
+    <param name="goalClearRange" value="0.13" />
+    <!-- Hysteresis factor for goalClearRange (multiplies goalClearRange for deactivation to prevent oscillation). -->
+    <param name="goalClearRangeHysteresis" value="1.5" />
+    <!-- Treat close goals located behind the robot (within this radius) as reached to avoid reversing. -->
+    <param name="goalBehindRange" value="0.05" />
+    <!-- Maximum yaw error (deg) allowed before declaring the goal reached. -->
+    <param name="goalYawToleranceDeg" value="4.0" />
+    <!-- Heading difference (deg) beyond which the planner freezes to wait for a better goal heading. -->
+    <param name="freezeAng" value="30.0" />
+    <!-- Time (s) to remain frozen once triggered before allowing motion again. -->
+    <param name="freezeTime" value="0.0" />
+    <!-- Loads additional parameter overrides from the selected YAML config. -->
+    <param from="$(find-pkg-share local_planner)/config/$(var local_planner_config).yaml"/>
+  </node>
+
+  <node pkg="local_planner" exec="pathFollower" name="pathFollower" output="screen">
+    <!-- Longitudinal offset (m) between the path follower reference frame and the vehicle frame. -->
+    <param name="sensorOffsetX" value="$(var sensorOffsetX)" />
+    <!-- Lateral offset (m) between the path follower reference frame and the vehicle frame. -->
+    <param name="sensorOffsetY" value="$(var sensorOffsetY)" />
+    <!-- Number of 10 ms control ticks to skip between publishing /cmd_vel updates. -->
+    <param name="pubSkipNum" value="1" />
+    <!-- Allows the follower to command reverse motion along the path. -->
+    <param name="twoWayDrive" value="$(var twoWayDrive)" />
+    <!-- Pure pursuit look-ahead distance (m) used to select the next waypoint. -->
+    <param name="lookAheadDis" value="0.5" />
+    <!-- Maximum translational speed (m/s) that the follower will command. -->
+    <param name="maxSpeed" value="$(var maxSpeed)" />
+    <!-- Maximum change in speed (m/s^2) applied per control update. -->
+    <param name="maxAccel" value="2.0" />
+    <!-- Minimum time (s) between switching forward and reverse directions when twoWayDrive is enabled. -->
+    <param name="switchTimeThre" value="1.0" />
+    <!-- Heading error limit (rad) allowed near the goal when omnidirectional motion is enabled. -->
+    <param name="omniDirDiffThre" value="0.5" />
+    <!-- Distance to the goal (m) at which the follower ramps down its target speed. -->
+    <param name="slowDwnDisThre" value="0.875" />
+    <!-- When true, high roll/pitch rates trigger a temporary slow-down sequence. -->
+    <param name="useInclRateToSlow" value="false" />
+    <!-- Roll/pitch rate threshold (deg/s) that activates the slow-down sequence. -->
+    <param name="inclRateThre" value="120.0" />
+    <!-- Speed multiplier during the first stage of the slow-down sequence. -->
+    <param name="slowRate1" value="0.25" />
+    <!-- Speed multiplier during the second slow-down stage. -->
+    <param name="slowRate2" value="0.5" />
+    <!-- Duration (s) of the first slow-down stage after activation. -->
+    <param name="slowTime1" value="2.0" />
+    <!-- Duration (s) of the second slow-down stage. -->
+    <param name="slowTime2" value="2.0" />
+    <!-- Enables a full stop when sustained roll/pitch exceeds inclThre. -->
+    <param name="useInclToStop" value="false" />
+    <!-- Roll/pitch magnitude threshold (deg) that triggers an emergency stop. -->
+    <param name="inclThre" value="45.0" />
+    <!-- Time (s) to hold the vehicle stopped once an incline-triggered stop occurs. -->
+    <param name="stopTime" value="5.0" />
+    <!-- Prevents yaw commands when linear speed is zero. -->
+    <param name="noRotAtStop" value="false" />
+    <!-- Maximum yaw error (deg) allowed once the goal is reached in pose mode. -->
+    <param name="goalYawToleranceDeg" value="4.0" />
+    <!-- Distance (m) from the goal at which the follower switches to yaw-alignment mode. -->
+    <param name="finalYawActivationDist" value="0.13" />
+    <!-- Hysteresis factor for finalYawActive stage switching (multiplies finalYawActivationDist for deactivation). -->
+    <param name="finalYawHysteresis" value="1.5" />
+    <!-- Starts the follower in autonomy mode rather than waiting for manual enable. -->
+    <param name="autonomyMode" value="$(var autonomyMode)" />
+    <!-- Desired cruise speed (m/s) when autonomy mode is active. -->
+    <param name="autonomySpeed" value="$(var autonomySpeed)" />
+    <!-- Delay (s) after manual input before /speed updates can adjust the cruise speed. -->
+    <param name="joyToSpeedDelay" value="$(var joyToSpeedDelay)" />
+    <!-- Low-pass filter alpha for autonomy mode velocity (0-1, lower = smoother). -->
+    <param name="velFilterAlpha" value="0.3" />
+    <!-- Low-pass filter alpha for yaw rate (0-1, lower = smoother). -->
+    <param name="yawRateFilterAlpha" value="0.3" />
+    <!-- Low-pass filter alpha for manual mode velocity (0-1, higher = more responsive). -->
+    <param name="manualVelFilterAlpha" value="0.5" />
+    <!-- Low-pass filter alpha for manual mode yaw rate (0-1, higher = more responsive). -->
+    <param name="manualYawFilterAlpha" value="0.5" />
+    <!-- Maximum yaw acceleration (deg/s^2) for smooth yaw rate changes. -->
+    <param name="maxYawAccel" value="90.0" />
+    <!-- Distance to switch to final approach mode. -->
+    <param name="finalApproachDist" value="0.35" />
+    <!-- Speed to switch to final approach mode. -->
+    <param name="finalApproachSpeed" value="0.2" />
+    <!-- Gain to switch to final approach mode. -->
+    <param name="finalApproachGain" value="1.5" />
+    <!-- Loads additional follower parameters from the selected YAML config. -->
+    <param from="$(find-pkg-share local_planner)/config/$(var local_planner_config).yaml"/>
+  </node>
+
+  <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="vehicleTransPublisher" args="-$(var sensorOffsetX) -$(var sensorOffsetY) 0 0 0 0 /sensor /vehicle"/>
+
+  <node pkg="tf2_ros" exec="static_transform_publisher" name="sensorTransPublisher" args="0 0 $(var cameraOffsetZ) -1.5707963 0 -1.5707963 /sensor /camera"/> -->
+
+</launch>

@@ -1,0 +1,9 @@
+<library path="local_planner_status_rviz_plugin">
+  <class name="local_planner_status_rviz_plugin/LocalPlannerStatusPanel"
+         type="local_planner_status_rviz_plugin::LocalPlannerStatusPanel"
+         base_class_type="rviz_common::Panel">
+    <description>
+      A panel for monitoring local planner status including goal reception and navigation state
+    </description>
+  </class>
+</library>

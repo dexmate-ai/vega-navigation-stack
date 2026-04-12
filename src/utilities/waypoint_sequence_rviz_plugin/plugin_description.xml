@@ -1,0 +1,9 @@
+<library path="waypoint_sequence_rviz_plugin">
+  <class name="waypoint_sequence_rviz_plugin/WaypointSequencePanel"
+         type="waypoint_sequence_rviz_plugin::WaypointSequencePanel"
+         base_class_type="rviz_common::Panel">
+    <description>
+      A panel for managing waypoint sequences
+    </description>
+  </class>
+</library>

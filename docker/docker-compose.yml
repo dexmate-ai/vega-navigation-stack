@@ -1,0 +1,96 @@
+services:
+  # AMD64 (x86_64) Service
+  autonomy-amd64:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.amd64
+    image: autonomy_stack_vega:jazzy-amd64
+    container_name: autonomy_vega_amd64
+    hostname: autonomy-amd64
+    runtime: nvidia
+    network_mode: host
+    ipc: host
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      # Mount the entire workspace
+      - ../:/workspace:rw
+      # Mount system configs
+      - ../system_cfgs:/workspace/system_cfgs:ro
+      # Preserve build artifacts (optional - comment out for clean builds)
+      - autonomy-build-amd64:/workspace/build
+      - autonomy-install-amd64:/workspace/install
+      - autonomy-log-amd64:/workspace/log
+      # X11 forwarding for GUI (RViz, etc.)
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - CYCLONEDDS_URI=file:///etc/cyclonedds/cyclonedds.xml
+    # Note: sysctls cannot be set with network_mode: host
+    # To set kernel receive buffer for large LiDAR messages, run on host:
+    # sudo sysctl -w net.core.rmem_max=2147483647
+    devices:
+      # Grant access to all devices (useful for LiDAR, joysticks, etc.)
+      - /dev:/dev
+    command: bash
+    platform: linux/amd64
+    profiles:
+      - amd64
+
+  # ARM64 (aarch64) Service
+  autonomy-arm64:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.arm64
+    image: autonomy_stack_vega:jazzy-arm64
+    container_name: autonomy_vega_arm64
+    hostname: autonomy-arm64
+    runtime: nvidia
+    network_mode: host
+    ipc: host
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      # Mount the entire workspace
+      - ../:/workspace:rw
+      # Mount system configs
+      - ../system_cfgs:/workspace/system_cfgs:ro
+      # Preserve build artifacts (optional - comment out for clean builds)
+      - autonomy-build-arm64:/workspace/build
+      - autonomy-install-arm64:/workspace/install
+      - autonomy-log-arm64:/workspace/log
+      # X11 forwarding for GUI (RViz, etc.)
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - CYCLONEDDS_URI=file:///etc/cyclonedds/cyclonedds.xml
+      # NVIDIA GPU access for hardware-accelerated rendering (RViz, etc.)
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    # Note: sysctls cannot be set with network_mode: host
+    # To set kernel receive buffer for large LiDAR messages, run on host:
+    # sudo sysctl -w net.core.rmem_max=2147483647
+    devices:
+      # Grant access to all devices (useful for LiDAR, joysticks, etc.)
+      - /dev:/dev
+    command: bash
+    platform: linux/arm64
+    profiles:
+      - arm64
+
+volumes:
+  # Named volumes to persist build artifacts
+  autonomy-build-amd64:
+  autonomy-install-amd64:
+  autonomy-log-amd64:
+  autonomy-build-arm64:
+  autonomy-install-arm64:
+  autonomy-log-arm64:

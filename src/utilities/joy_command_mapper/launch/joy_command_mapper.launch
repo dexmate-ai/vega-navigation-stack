@@ -1,0 +1,18 @@
+<launch>
+  <arg name="controller_type" default="ps3" description="Controller type: dualsense, 8bitdo"/>
+  <arg name="joy_dev" default="/dev/input/js0" description="Joystick device"/>
+  <arg name="joy_deadzone" default="0.12" description="Joystick deadzone"/>
+  
+  <!-- Launch joy node to read from physical joystick -->
+  <node pkg="joy" exec="joy_node" name="joy_node" output="screen">
+    <param name="dev" value="$(var joy_dev)"/>
+    <param name="deadzone" value="$(var joy_deadzone)"/>
+    <param name="autorepeat_rate" value="0.0"/>
+  </node>
+  
+  <!-- Launch joy_command_mapper with selected controller configuration -->
+  <node pkg="joy_command_mapper" exec="joy_command_mapper_node" name="joy_command_mapper" output="screen">
+    <param from="$(find-pkg-share joy_command_mapper)/config/$(var controller_type).yaml"/>
+  </node>
+  
+</launch>

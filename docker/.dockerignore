@@ -1,0 +1,40 @@
+# ROS2 build artifacts
+build/
+install/
+log/
+
+# Git
+.git/
+.gitignore
+.gitmodules
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+
+# Bags and data files
+*.bag
+*.db3
+*.mcap
+
+# Documentation
+*.md
+img/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Claude
+.claude/

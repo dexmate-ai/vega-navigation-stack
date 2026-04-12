@@ -1,0 +1,25 @@
+# Body filter configuration
+# Defines the box boundaries for filtering robot body points from the point cloud
+
+/**:
+  ros__parameters:
+    # Enable/disable the body filter
+    filter_enabled: true
+
+    # Reference frame for the filter box (typically the robot body frame)
+    vehicle_frame: "vehicle"
+
+    # Box filter boundaries in vehicle frame (meters)
+    # Points inside this box will be removed from the point cloud
+    box_filter:
+      min_x: -0.5  # behind laser center
+      max_x: 0.6   # at laser center
+      min_y: -0.45  # left side
+      max_y: 0.45   # right side
+      min_z: 0.0   # ground level
+      max_z: 2.0   # up to 2m height
+
+    # Input/output topics
+    input_topic: "/registered_scan"
+    output_topic: "/registered_scan_filtered_map"
+

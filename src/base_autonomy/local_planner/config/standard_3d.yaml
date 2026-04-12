@@ -1,0 +1,27 @@
+localPlanner:
+  ros__parameters:
+    omniDirGoalThre: -1.0  # Distance (m) within which omni-directional scoring is enabled; <=0 keeps purely forward weighting.
+    pathScale: 0.65        # Base scale applied to the path library; smaller values hug tighter corridors than the launch default.
+    minPathScale: 0.25     # Smallest scale the planner is allowed to shrink to before reporting no path.
+    pathScaleStep: 0.1     # Increment by which the planner reduces pathScale when searching for a valid solution.
+    autonomySpeed: 0.5     # Cruise speed (m/s) the planner requests when autonomy starts without joystick input.
+    maxSpeed: 0.5          # Maximum speed (m/s) used for normalising the /speed topic and planner scoring.
+    dirWeight: 0.01        # Heading error weighting factor; lower values let the planner accept larger yaw offsets.
+    obstacleHeightThre: 0.10  # Points >10 cm above the terrain map are treated as hard obstacles.
+    groundHeightThre: 0.10    # Points above 10 cm contribute to soft cost penalties when useCost is enabled.
+    goalClearRange: 0.15
+    goalClearRangeHysteresis: 1.5
+    goalYawToleranceDeg: 4.0
+
+pathFollower:
+  ros__parameters:
+    omniDirGoalThre: -1.0    # Distance (m) below which lateral omni commands are allowed; <=0 disables lateral output.
+    yawRateGain: 3.0         # Yaw-rate proportional gain (rad/s per rad) for normal motion.
+    stopYawRateGain: 1.5     # Reduced yaw-rate gain used when the platform is nearly stopped.
+    maxYawRate: 35.0         # Maximum yaw rate command in deg/s.
+    dirDiffThre: 0.3         # Heading error threshold (rad) required before accelerating toward the path.
+    autonomySpeed: 0.5       # Cruise speed (m/s) command used when autonomy mode is latched.
+    maxSpeed: 0.5            # Upper bound (m/s) used to scale joystick and autonomy speed requests.
+    finalYawActivationDist: 0.15  # Distance that stop xy movement and only adjust yaw. Advise match goalClearRange in localPlanner
+    finalYawHysteresis: 1.5
+    goalYawToleranceDeg: 4.0

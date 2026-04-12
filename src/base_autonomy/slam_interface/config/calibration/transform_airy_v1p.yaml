@@ -1,0 +1,32 @@
+# Transform for Vega-1-plus (Vega-1 with Thor)
+
+/**:
+  ros__parameters:
+    map_frame: "map"
+    init_frame: "lidar_init"
+    init_odom_frame: "lidar_init_odom"
+    vehicle_frame: "vehicle"
+    laser_imu_frame: "imu_link"
+    laser_frame: "lidar_3d"
+
+    # lidar_imu in vehicle frame (T_v_i)
+    t_v_i:
+      x: 0.135
+      y: 0.0
+      z: 0.355
+
+    R_v_i:
+      data: [-0.766044, 0.0,  -0.642788,
+             0.0, 1.0, 0.0,
+             0.642788,  0.0, -0.766044]
+    
+    # lidar in lidar_imu frame (T_i_l, aka lidar extrinsic to lidar_imu)
+    t_i_l:
+      x: 0.004250
+      y: 0.004180
+      z: -0.004460
+
+    R_i_l:
+      data: [0.000280, -0.999993, 0.003629,
+            -0.999946, -0.000242, 0.010384,
+            -0.010384, -0.003632, -0.999939]

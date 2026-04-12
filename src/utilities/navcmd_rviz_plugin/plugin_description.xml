@@ -1,0 +1,9 @@
+<library path="navcmd_rviz_plugin">
+  <class name="navcmd_rviz_plugin/NavCmdTool"
+         type="navcmd_rviz_plugin::NavCmdTool"
+         base_class_type="rviz_common::Tool">
+    <description>
+      A tool for sending navigation commands with PoseStamped goals
+    </description>
+  </class>
+</library>

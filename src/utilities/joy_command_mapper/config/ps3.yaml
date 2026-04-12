@@ -1,0 +1,45 @@
+joy_command_mapper:
+  ros__parameters:
+    controller_type: "ps3"
+    publish_rate: 50.0
+    deadzone: 0.12
+    
+    # Maximum speeds
+    max_linear_speed: 1.0  # m/s
+    max_angular_speed: 1.396  # rad/s (80 deg/s)
+    
+    # Velocity axis mappings
+    velocity:
+      vx:
+        axis: 3  # Right stick up/down
+        scale: 1.0
+        deadzone: 0.1
+        inverted: false
+      vy:
+        axis: 2  # Right stick left/right
+        scale: 1.0
+        deadzone: 0.1
+        inverted: false
+      wz:
+        axis: 0  # Left stick left/right
+        scale: 1.0
+        deadzone: 0.1
+        inverted: false
+    
+    # Mode axis mappings (triggers)
+    modes:
+      autonomy:
+        axis: 4  # Left trigger (L2)
+        threshold: -0.1
+        inverted: true  # > -0.1 means autonomy OFF
+      manual:
+        axis: 5  # Right trigger (R2)
+        threshold: -0.1
+        inverted: true  # > -0.1 means manual OFF
+    
+    # Action button mappings
+    actions:
+      clear_cloud:
+        button: 9  # L1 button
+      emergency_stop:
+        button: 5  # PS button (if available)
