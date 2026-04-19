@@ -1,8 +1,8 @@
 # Vega Navigation Stack
 
-Obstacle avoidance, route planning, mapping, relocalization, and more for Vega-1 Plus.
+Obstacle avoidance, route planning, mapping, relocalization, and more for Vega-1 Pro.
 
-> **Recommended:** Run this stack on the Vega-1 Plus's onboard Jetson Thor via Docker to minimize control loop latency.
+> **Recommended:** Run this stack on the Vega-1 Pro's onboard Jetson Thor via Docker to minimize control loop latency.
 
 ---
 
@@ -14,7 +14,7 @@ Obstacle avoidance, route planning, mapping, relocalization, and more for Vega-1
   - [Optimize ROS2 Communication](#optimize-ros2-communication)
   - [Test SuperOdom](#test-superodom)
   - [Test Autonomy Stack](#test-autonomy-stack)
-- [Navigation on Vega-1 Plus](#navigation-on-vega-1-plus)
+- [Navigation on Vega-1 Pro](#navigation-on-vega-1-Pro)
   - [DualSense Controller (optional)](#optional-setup-dualsense-controller)
   - [Run the Velocity Subscriber](#run-the-velocity-subscriber)
   - [Planning and SLAM Overview](#planning-and-slam-overview)
@@ -161,7 +161,7 @@ Drag the robot around and observe in RViz to verify all components are working.
 
 ---
 
-## Navigation on Vega-1 Plus
+## Navigation on Vega-1 Pro
 
 ### (Optional) Setup DualSense Controller
 
